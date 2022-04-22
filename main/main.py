@@ -1,10 +1,10 @@
 import pygame
 
 import generation.worldgen as worldgen
-
+import tiles.tiles
 WIDTH, HEIGHT = 900, 900
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Lol")
+pygame.display.set_caption("Game")
 
 # Colors
 WHITE = (255, 255, 255)

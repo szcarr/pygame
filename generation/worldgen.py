@@ -32,7 +32,10 @@ def generate_world(width, height, **kwargs):
 
     return world
 
-def primitive_generate(width, height, volatility, survivability_offset):
+def generate_plains():
+    pass
+
+def primitive_generate(width, height, volatility, survivability_offset): # <- old version
     world_map = {}
     value = random.randrange(0, 100)
     for y in range(height):
