@@ -6,5 +6,5 @@ git add .
 git commit -m "New version"
 git remote rm origin
 git remote add origin https://github.com/szcarr/pygame.git
-git push -f origin master
+git push -f origin main
 REM pause
