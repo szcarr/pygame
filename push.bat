@@ -5,7 +5,7 @@ git init
 git add .
 git commit -m "New version"
 git remote rm origin
-git remote add origin https://github.com/szcarr/TextUI.git
+git remote add origin https://github.com/szcarr/pygame.git
 REM git pull --rebase origin master
 git push -f origin master
 REM pause
