@@ -1,4 +1,4 @@
-REM Use this batch file to push thid folder to github
+REM Use this batch file to push this folder to github
 REM Place in folder you want to upload
 REM Replace origin link to your own repository
 git init
