@@ -3,6 +3,8 @@ import time
 
 import generation.worldgen
 import generation.refineworld
+import generation.circumference.circumference as circumference
+
 import tiles.tiles as tiles
 
 WIDTH, HEIGHT = 900, 900
@@ -21,10 +23,12 @@ GAMEHEIGHT = 16 * 6
 GAMEWIDTH = 110
 
 # Game tile size
-TILESIZE = 6
+TILESIZE = 20 # was 6
 
 GAMEHEIGHT = int(round(HEIGHT / TILESIZE)) + 1
 GAMEWIDTH = int(round(WIDTH / TILESIZE)) + 1
+
+print(GAMEHEIGHT * GAMEWIDTH)
 
 tilelist = tiles.load_TileTypes() # All different tiles
 
@@ -39,16 +43,36 @@ def main():
 
     clock.tick(FPS)
     
+    tiles.print_loaded_tiles()
+
     while True:
         #ADDING PLAINS
         worldmap = generation.worldgen.generate_plains(GAMEWIDTH, GAMEHEIGHT, tilelist)
+        updated_worldmap = worldmap
         #generation.worldgen.printgeneration(worldmap, GAMEWIDTH, GAMEHEIGHT)
-        game_update(worldmap)
+        game_update(worldmap, updated_worldmap)
 
-        #Adding ocean        
-        worldmap = generation.worldgen.generate_ocean(500, 9, worldmap, f"{int(round(GAMEWIDTH / 2)) + 1} {int(round(GAMEHEIGHT / 2)) + 1}", tilelist)
-        game_update(worldmap)
+        #Adding ocean
+        ocean_generate_pos =  f"{int(round(GAMEWIDTH / 2)) + 1} {int(round(GAMEHEIGHT / 2)) + 1}"
+        size = (GAMEHEIGHT * GAMEWIDTH) * 0.0221
+        updated_worldmap = generation.worldgen.generate_ocean(size, 9, worldmap, ocean_generate_pos, tilelist)
+        game_update(worldmap, updated_worldmap)
+        worldmap = updated_worldmap
 
+        #Circumference
+        print("CIRCUMFRENRECE")
+        start_p = circumference.get_furthest_value(tiles.get_tile_by_name(tilelist, "Deep water").tile_id, ocean_generate_pos, worldmap)
+        updated_worldmap = circumference.get_circumference(tiles.get_tile_by_name(tilelist, "Deep water").tile_id, start_p, worldmap)
+        game_update(worldmap, updated_worldmap)
+        worldmap = updated_worldmap
+
+
+
+        print("STARTING SMOOTGING")
+        updated_worldmap = generation.refineworld.smooth_world(worldmap, GAMEWIDTH, GAMEHEIGHT, 0)
+        game_update(worldmap, updated_worldmap)
+        worldmap = updated_worldmap
+        print("FINISHED SMOOTGING")
 
         length = 0 # <- is 3
         for i in range(length):
@@ -62,25 +86,31 @@ def main():
         time.sleep(5)
     pygame.quit()
 
-def game_update(worldmap):
+def game_update(worldmap, updated_worldmap):
     object_update()
-    background_update(worldmap)
+    background_update(worldmap, updated_worldmap)
 
 def object_update():
     pass
 
-def background_update(worldmap):
+def background_update(worldmap, updated_worldmap):
     # Creating tiles and assigning color based on their value
     for y in range(GAMEHEIGHT):
         for x in range(GAMEWIDTH):
             pos = f"{x} {y}"
             value = worldmap.get(pos)
+            updated_value = updated_worldmap.get(pos)
             if value == -1:
                 '''
                 -1 Means the tile should keep its previous color
                 '''
-                continue 
-            tile = tiles.get_tile_by_id(tilelist, value)
+                continue
+            elif value == updated_worldmap:
+                '''
+                Does not need to update a value that has the same value
+                '''
+                continue
+            tile = tiles.get_tile_by_id(tilelist, updated_value)
             if tile != None:
                 color = tile.color
                 pygame.draw.rect(WIN, color, pygame.Rect(TILESIZE * x, TILESIZE * y, TILESIZE, TILESIZE))

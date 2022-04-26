@@ -25,7 +25,7 @@ def load_TileTypes():
 
     tiles = {
         "Grass": (46, 130, 48),
-        "Shallow water": (66, 221, 245),
+        "Shallow water": (214, 191, 88), #(66, 221, 245)
         "Deep water": (28, 110, 232),
         "Beach": (214, 191, 88),
         "Snow": (238, 237, 242),

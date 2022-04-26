@@ -41,6 +41,6 @@ done
 git init
 git commit -m "Python version"
 git remote add "Pygame" https://github.com/szcarr/pygame.git
-git add .*
+git add *
 git pull origin main
 git push -u pygame main
