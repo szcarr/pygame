@@ -4,6 +4,7 @@ import math
 import generation.refineworld
 import generation.value
 import tiles.tiles as tiles
+import generation.circumference.circumference as circumference
 
 def generate_world(width, height, tilelist ,**kwargs):
 
@@ -105,14 +106,12 @@ def generate_ocean(ocean_size, number_of_oceans, world_map, generating_position,
         for k in ocean_map:
             total_ocean_map[k] = ocean_map.get(k)
 
-
     for k in total_ocean_map:
         world_map[k] = total_ocean_map.get(k)
 
     return world_map
 
-def generate_beach():
-    pass
+
 
 def modify_value(worldmap, value, pos, volatility, survivability_offset):
     

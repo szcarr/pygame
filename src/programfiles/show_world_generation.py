@@ -5,6 +5,7 @@ import generation.worldgen
 import generation.refineworld
 import generation.circumference.circumference as circumference
 import seeds
+import generation.beach as beach
 
 import tiles.tiles as tiles
 
@@ -15,7 +16,7 @@ pygame.display.set_caption("World generation showcase")
 FPS = 60
 
 # Game tile size
-TILESIZE = 80 # was 6
+TILESIZE = 6 # was 6
 
 
 GAMEHEIGHT = int(round(WINDOW_HEIGHT / TILESIZE)) + 1
@@ -58,33 +59,38 @@ def main(**kwargs):
             worldmap = updated_worldmap
 
         else: # Not loading from seed then defaults to random world gen
+            print("Random seed")
             #ADDING PLAINS
-            worldmap = generation.worldgen.generate_plains(GAMEWIDTH, GAMEHEIGHT, tilelist)
-            updated_worldmap = worldmap
+            worldmap = {}
+            updated_worldmap = generation.worldgen.generate_plains(GAMEWIDTH, GAMEHEIGHT, tilelist)
             game_update(worldmap, updated_worldmap)
+            worldmap = updated_worldmap.copy()
 
+            print("Ocean")
             #Adding ocean
             ocean_generate_pos =  f"{int(round(GAMEWIDTH / 2)) + 1} {int(round(GAMEHEIGHT / 2)) + 1}"
             size = (GAMEHEIGHT * GAMEWIDTH) * 0.0221
-            updated_worldmap = generation.worldgen.generate_ocean(size, 9, worldmap, ocean_generate_pos, tilelist)
+            updated_worldmap = generation.worldgen.generate_ocean(size, 9, updated_worldmap, ocean_generate_pos, tilelist)
             game_update(worldmap, updated_worldmap)
-            worldmap = updated_worldmap
+            worldmap = updated_worldmap.copy()
 
             #print("STARTING SMOOTGING")
-            updated_worldmap = generation.refineworld.smooth_world(worldmap, GAMEWIDTH, GAMEHEIGHT, 0, True)
+            updated_worldmap = generation.refineworld.smooth_world(updated_worldmap, GAMEWIDTH, GAMEHEIGHT, 0, True)
             game_update(worldmap, updated_worldmap)
-            worldmap = updated_worldmap
+            worldmap = updated_worldmap.copy()
             print("FINISHED SMOOTGING")
 
             #Circumference
-            print("CIRCUMFRENRECE")
+            #print("CIRCUMFRENRECE")
+            #start_p = circumference.get_furthest_value(tiles.get_tile_by_name(tilelist, "Deep water").tile_id, ocean_generate_pos, worldmap)
+            #updated_worldmap = circumference.get_circumference(tiles.get_tile_by_name(tilelist, "Deep water").tile_id, start_p, worldmap)
+            #game_update(worldmap, updated_worldmap)
+            #worldmap = updated_worldmap
+            
             start_p = circumference.get_furthest_value(tiles.get_tile_by_name(tilelist, "Deep water").tile_id, ocean_generate_pos, worldmap)
-            updated_worldmap = circumference.get_circumference(tiles.get_tile_by_name(tilelist, "Deep water").tile_id, start_p, worldmap)
-
+            updated_worldmap = beach.generate_beach(start_p, updated_worldmap, tilelist)
             game_update(worldmap, updated_worldmap)
 
-            worldmap = updated_worldmap
-            
             length = 0 # <- is 3
             for i in range(length):
                 offset = 2
@@ -122,10 +128,12 @@ def background_update(worldmap, updated_worldmap):
                 '''
                 continue
             tile = tiles.get_tile_by_id(tilelist, updated_value)
+            print(tile)
             if tile != None:
                 color = tile.color
                 pygame.draw.rect(WIN, color, pygame.Rect(TILESIZE * x, TILESIZE * y, TILESIZE, TILESIZE))
                 pygame.display.flip()
 
 if __name__ == "__main__":
-    main(Seed = "/home/scp092/Documents/pygame/src/seeds/water.txt")
+    seed = None #"/home/scp092/Documents/pygame/src/seeds/water.txt"
+    main(Seed = seed)

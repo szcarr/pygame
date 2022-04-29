@@ -19,6 +19,9 @@ class TileType:
         self.color = color
         self.tile_id = tile_id        
 
+    def __repr__(self) -> str:
+        return f"TileType {self.name} {self.color} {self.tile_id}"
+
 def load_TileTypes():
 
     tile_list = []
@@ -27,7 +30,7 @@ def load_TileTypes():
         "Grass": (46, 130, 48),
         "Shallow water": (214, 191, 88), #(66, 221, 245)
         "Deep water": (28, 110, 232),
-        "Beach": (214, 191, 88),
+        "Sand": (214, 191, 88),
         "Snow": (238, 237, 242),
         "Hills": (97, 54, 54),
         "Moutainbase": (105, 97, 120),

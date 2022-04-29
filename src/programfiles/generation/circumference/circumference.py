@@ -47,12 +47,14 @@ def draw_outline(target_value, start_coordinates, world_map) -> dict:
     current_pos = start_coordinates
     x,y = convert_pos_to_int(start_coordinates)
 
-    pygame.draw.rect(show_world_generation.WIN, (255, 255, 255),
-    pygame.Rect(show_world_generation.TILESIZE * x, show_world_generation.TILESIZE * y, show_world_generation.TILESIZE, show_world_generation.TILESIZE))
-    pygame.display.flip()
+    #pygame.draw.rect(show_world_generation.WIN, (255, 255, 255),
+    #pygame.Rect(show_world_generation.TILESIZE * x, show_world_generation.TILESIZE * y, show_world_generation.TILESIZE, show_world_generation.TILESIZE))
+    #pygame.display.flip()
 
     path = []
     exclude = []
+
+    amount_of_steps_back = 0
 
     while True:
         skip = False
@@ -69,14 +71,14 @@ def draw_outline(target_value, start_coordinates, world_map) -> dict:
             if temp_pos not in path and temp_pos not in exclude:
                 for i, element in enumerate(OFFSET):
                     if i % 2 == 1 and not skip:                        
-                        x,y = convert_pos_to_int(temp_pos) # FOR DRAWING
-                        pygame.draw.rect(show_world_generation.WIN, (255, 0 , 0), 
-                        pygame.Rect(show_world_generation.TILESIZE * x, show_world_generation.TILESIZE * y, show_world_generation.TILESIZE, show_world_generation.TILESIZE))
-                        pygame.display.flip()
+                        #x,y = convert_pos_to_int(temp_pos) # FOR DRAWING
+                        #pygame.draw.rect(show_world_generation.WIN, (255, 0 , 0), 
+                        #pygame.Rect(show_world_generation.TILESIZE * x, show_world_generation.TILESIZE * y, show_world_generation.TILESIZE, show_world_generation.TILESIZE))
+                        #pygame.display.flip()
 
-                        pygame.draw.rect(show_world_generation.WIN, (255, 0 , 0), 
-                        pygame.Rect(show_world_generation.TILESIZE * x, show_world_generation.TILESIZE * y, show_world_generation.TILESIZE, show_world_generation.TILESIZE))
-                        pygame.display.flip()
+                        #pygame.draw.rect(show_world_generation.WIN, (255, 0 , 0),  # FOR DRAWING
+                        #pygame.Rect(show_world_generation.TILESIZE * x, show_world_generation.TILESIZE * y, show_world_generation.TILESIZE, show_world_generation.TILESIZE))
+                        #pygame.display.flip()
 
                         curpos = convert_pos_to_int(temp_pos)
                         offpos = convert_pos_to_int(element)
@@ -90,13 +92,26 @@ def draw_outline(target_value, start_coordinates, world_map) -> dict:
                 color = (235, 79, 52)
                 if i == len(path) - 1:
                     color = (133, 92, 62)
-                x,y = convert_pos_to_int(e)
-                pygame.draw.rect(show_world_generation.WIN, color, 
-                pygame.Rect(show_world_generation.TILESIZE * x, show_world_generation.TILESIZE * y, show_world_generation.TILESIZE, show_world_generation.TILESIZE))
-                pygame.display.flip()
-            time.sleep(1)
+                #x,y = convert_pos_to_int(e)
+                #pygame.draw.rect(show_world_generation.WIN, color, 
+                #pygame.Rect(show_world_generation.TILESIZE * x, show_world_generation.TILESIZE * y, show_world_generation.TILESIZE, show_world_generation.TILESIZE))
+                #pygame.display.flip()
+        if not skip:
+            amount_of_steps_back += 1
+            exclude.append(current_pos)
+            current_pos = path[(len(path) - 1) - amount_of_steps_back]
+        else:
+            amount_of_steps_back = 0
+        if current_pos == start_coordinates:
+            break
 
-    return world_map
+    for e in path:
+        x,y = convert_pos_to_int(e)
+        pygame.draw.rect(show_world_generation.WIN, (0, 0, 0), 
+        pygame.Rect(show_world_generation.TILESIZE * x, show_world_generation.TILESIZE * y, show_world_generation.TILESIZE, show_world_generation.TILESIZE))
+        pygame.display.flip()
+
+    return path
 
 def convert_pos_to_int(pos) -> list:
     lst = []
